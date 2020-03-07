@@ -1,5 +1,6 @@
-doctype html
-html
-    title Knowledge Base
-body
+extends layout
+
+block content
     h1 #{title}
+    each article, i in articles
+        li= article.title

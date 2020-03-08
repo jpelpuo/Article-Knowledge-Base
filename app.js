@@ -74,7 +74,9 @@ app.get('/', (request, response) => {
 
 // Route files
 const articles = require('./routes/articles');
-app.use('/articles', articles)
+const users = require('./routes/users');
+app.use('/users', users);
+app.use('/articles', articles);
 
 //Create server
 app.listen('3000', () => {

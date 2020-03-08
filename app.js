@@ -3,10 +3,9 @@ const path = require('path');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session');
-const { addArticle, getArticle, editArticle, getEveryArticle, deleteArticle } = require('./services/article');
+const {getEveryArticle} = require('./services/article');
 
 
 //Connect to MongoDB
@@ -47,16 +46,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Express session middleware
 app.use(session({
     secret: 'hi there',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
-  }))
+    resave: true,
+    saveUninitialized: true
+}))
 
 //   Express messages
 app.use(require('connect-flash')());
 app.use(function (req, res, next) {
-  res.locals.messages = require('express-messages')(req, res);
-  next();
+    res.locals.messages = require('express-messages')(req, res);
+    next();
 });
 
 
@@ -74,91 +72,9 @@ app.get('/', (request, response) => {
     console.log(request);
 })
 
-//Add route
-app.get('/articles/add', (request, response) => {
-    response.render('add_article', {
-        title: "Add Article"
-    })
-    console.log(request);
-})
-
-//Add article POST route
-app.post('/articles/add', (request, response) => {
-    let title = request.body.title;
-    let author = request.body.author;
-    let body = request.body.body;
-
-    addArticle({ title, author, body })
-        .then(result => {
-            response.redirect('/');
-            console.log(result);
-        })
-        .catch(error => {
-            console.log(error)
-            return;
-        })
-})
-
-// Get single article
-app.get('/article/:id', (request, response) => {
-    let id = request.params.id;
-    getArticle(id)
-        .then(article => {
-            response.render('article', {
-                article: article
-            })
-        })
-        .catch(error => {
-            console.log(error)
-        })
-})
-
-// Load edit form
-app.get('/article/edit/:id', (request, response) => {
-    let id = request.params.id;
-    getArticle(id)
-        .then(article => {
-            response.render('edit_article', {
-                title: "Edit Article",
-                article: article
-            })
-        })
-        .catch(error => {
-            console.log(error)
-        })
-})
-
-
-// Update Submit POST article
-app.post('/articles/edit/:id', (request, response) => {
-    let article = {};
-    article.title = request.body.title;
-    article.author = request.body.author;
-    article.body = request.body.body;
-
-    editArticle(request.params.id, article)
-        .then(article => {
-            response.redirect('/');
-            console.log(article);
-        })
-        .catch(error => {
-            console.log(error)
-            return;
-        })
-})
-
-//Delete post
-app.delete('/article/:id', (request, response) => {
-    let id = request.params.id;
-    deleteArticle(id)
-        .then(article => {
-            response.send('Success');
-        })
-        .catch(error => {
-            console.log(error)
-        })
-})
-
+// Route files
+const articles = require('./routes/articles');
+app.use('/articles', articles)
 
 //Create server
 app.listen('3000', () => {

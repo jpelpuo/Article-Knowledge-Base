@@ -22,6 +22,15 @@ const registerUser = async ({name, email, username, password}) => {
     })
 }
 
+const getUser = async ({username}) => {
+    try{
+        return await User.findOne({username});
+    }catch(e){
+        throw new Error(e);
+    }
+}
+
 module.exports = {
-    registerUser
+    registerUser,
+    getUser
 }

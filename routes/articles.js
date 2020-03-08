@@ -9,7 +9,7 @@ const router = express.Router();
 //Add article POST route
 router.post('/add', [
     check('title', 'Title is required').notEmpty(),
-    check('author', 'Author is required').notEmpty(),
+    // check('author', 'Author is required').notEmpty(),
     check('body', 'Body is required').notEmpty()
 ], (request, response) => {
 
@@ -23,7 +23,7 @@ router.post('/add', [
     }
         console.log(chalk.redBright("Did not work"));
         let title = request.body.title;
-        let author = request.body.author;
+        let author = request.user._id;
         let body = request.body.body;
 
         addArticle({ title, author, body })
@@ -52,9 +52,10 @@ router.get('/add', (request, response) => {
 router.get('/:id', (request, response) => {
     let id = request.params.id;
     getArticle(id)
-        .then(article => {
+        .then((article) => {
             response.render('article', {
-                article: article
+                article: article,
+                author: user.name
             })
         })
         .catch(error => {

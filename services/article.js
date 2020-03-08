@@ -1,4 +1,5 @@
 const Article = require('../models/article');
+const User = require('../models/user');
 
 // Get all articles
 const getEveryArticle = async () => {
@@ -21,7 +22,9 @@ const addArticle = async ({title, author, body}) => {
 // Get one article
 const getArticle = async (id) => {
     try{
-        return await Article.findById(id);
+        await Article.findById(id, async (error, article) => {
+            return await User.findById(article.author);
+        });
     }catch(e){
         throw new Error(e)
     }

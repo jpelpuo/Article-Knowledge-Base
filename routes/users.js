@@ -2,6 +2,7 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const { registerUser } = require('../services/users');
 const chalk = require('chalk');
+const passport = require('passport');
 
 const router = express.Router();
 
@@ -45,6 +46,22 @@ router.post('/register', [
 
 router.get('/login', (request, response) => {
     response.render('login');
+})
+
+// Login Process
+router.post('/login', (request, response, next) => {
+    passport.authenticate('local', {
+        successRedirect : '/',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    })(request, response, next);
+})
+
+// Logout
+router.get('/logout', (request, response) => {
+    request.logout();
+    request.flash('success', 'You are logged out');
+    response.redirect('/users/login')
 })
 
 module.exports = router;

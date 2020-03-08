@@ -5,13 +5,15 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const session = require('express-session');
-const {getEveryArticle} = require('./services/article');
+const { getEveryArticle } = require('./services/article');
+const config = require('./config/database');
+const passport = require('passport');
 
 
 //Connect to MongoDB
 (async () => {
     try {
-        await mongoose.connect('mongodb://localhost:27017/nodekb',
+        await mongoose.connect(config.database,
             {
                 useNewUrlParser: true,
                 useUnifiedTopology: true
@@ -57,6 +59,15 @@ app.use(function (req, res, next) {
     next();
 });
 
+// Passport config
+require('./config/passport')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('*', (request, response, next) => {
+    response.locals.user = request.user || null;
+    next();
+})
 
 //Home route
 app.get('/', (request, response) => {

@@ -1,51 +1,48 @@
 const Article = require('../models/article');
-const User = require('../models/user');
 
 // Get all articles
 const getEveryArticle = async () => {
-    try{
+    try {
         return await Article.find({})
-    }catch(e){
+    } catch (e) {
         throw new Error(e);
     }
 }
 
 // Add an article
-const addArticle = async ({title, author, body}) => {
-    try{
-        return await new Article({title, author, body}).save();
-    }catch(e){
+const addArticle = async ({ title, author, body }) => {
+    try {
+        return await new Article({ title, author, body }).save();
+    } catch (e) {
         throw new Error(e)
     }
 }
 
 // Get one article
 const getArticle = async (id) => {
-    try{
-        await Article.findById(id, async (error, article) => {
-            return await User.findById(article.author);
-        });
-    }catch(e){
+    try {
+        return await Article.findById(id);
+    } catch (e) {
         throw new Error(e)
     }
 }
 
 // Edit article
 const editArticle = async (id, data) => {
-    let query = {_id: id}
-    try{
+    let query = { _id: id }
+    try {
         return await Article.update(query, data);
-    }catch(e){
+    } catch (e) {
         throw new Error(e)
     }
 }
 
 // Delete article
 const deleteArticle = async id => {
-    let query = {_id: id};
-    try{
+    let query = { _id: id };
+    try {
         return await Article.remove(query);
-    }catch(e){
+    } catch (e) {
         throw new Error(e);
     }
 }

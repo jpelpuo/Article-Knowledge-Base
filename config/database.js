@@ -1,4 +1,4 @@
-module.exports ={
-    database : 'mongodb://localhost:27017/nodekb',
+module.exports = {
+    database: 'mongodb://localhost:27017/nodekb',
     secret: 'mysecret'
 }
